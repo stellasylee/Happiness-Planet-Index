@@ -5,28 +5,35 @@ This research will examine what determines the happiness of a country and will f
 Our explanatory variables include:
   * Region
   * Year
-  * Life Satisfaction (reported as a mean score between 0-10)
-  * Life Expectancy (in years)
-  * Footprint (g ha/cap)
-  * Healthy Life Years (HLY)
-  * Purchasing Power Parity
-  * Population Density
-  * Government Corruption
-  * The difference of happiness within the country (Standard deviation of ladder by country-year) 
-  * Human Development Index: a statistic composite index of life expectancy
-  * Education level
-  * Percentage of cell phone users
-  * Percentage of wifi access in home
+  * Life Expectancy at birth (in years)
+  * Population Density (people/$km^2$ land area)
+  * Purchasing Power Parity (PPP)
+  * Government Debt
+  * Unemployment
+  * Health Expenditure for government and private
+  * Perceptions of corruption
+  * Freedom to make life choices
+  * Social Support
   
 After building our final model, we want to focus if the following factors produce better prediction by Extra Sum of Squares:
-  * Percentage of women completing secondary education
-  * 
+  * Children out of primary school at school age (% female)
+  * Percentage of individuals using the Internet (% of population)
   
   
 ## Data Resources
 1. Happy Planet Index (http://happyplanetindex.org/)
-  * Happy Planet Index
-  * GDP per capita (purchasing power)
-  * Life expectancy at birth
+  * Happy Planet Index Score
+  * HPI rank
 2. World Happiness Report (http://worldhappiness.report/ed/2018/?fbclid=IwAR37naSOvjBPwztHvARL7I3J4F60H7yD2-9DUuO98Xrb1HJsBsk2U0_EdQs) 
-  * Corruption
+  * Perceptions of corruption
+  * Freedom to make life choices
+  * Social Support
+3. WorldBank
+  * Percentage of individuals using the Internet (% of population)
+  * Population Density (people/$km^2$ land area)
+  * Purchasing Power Parity (PPP)
+  * Total Unemployment Rate (modeled ILO estimate)
+  * Government Health Expenditure
+  * Domestic private health expenditure
+  * Central Government Debt
+  * Children out of primary school at school age (% female)
