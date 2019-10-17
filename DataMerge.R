@@ -108,3 +108,8 @@ full <- left_join (merged, otherV, by=c("Country", "Year"))
 
 write.csv(full, "H:\\310\\finalDataset.csv")
 
+# laborWomen <- read.csv("https://raw.githubusercontent.com/stellasylee/Happiness-Planet-Index/master/Raw%20Data/LaborForceFemale.csv")
+# laborWomen <- laborWomen[,c(3,4,5,6,7)]
+# colnames(laborWomen) <- c("Country", "Code", "2009", "2012", "2016")
+# laborWomen <- gather(data=laborWomen, key=Year, value="Labor Force Percentage", "2009", "2012", "2016")
+
