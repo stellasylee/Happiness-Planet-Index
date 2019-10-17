@@ -108,8 +108,3 @@ full <- left_join (merged, otherV, by=c("Country", "Year"))
 
 write.csv(full, "H:\\310\\finalDataset.csv")
 
-real <- read.csv("https://raw.githubusercontent.com/stellasylee/Happiness-Planet-Index/master/Raw%20Data/OtherVariables.csv")
-real2 <- real[,c(1, 2, 5, 7, 9)]
-colnames(real2) <- c("Country", "Year", "Social Support", "Freedom to make Life Choices", "Perceptions of Corruption")
-real2 <- filter(real2, (Year=='2009'|Year=='2012'|Year=='2016'))
-
