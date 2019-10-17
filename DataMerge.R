@@ -112,4 +112,6 @@ write.csv(full, "H:\\310\\finalDataset.csv")
 # laborWomen <- laborWomen[,c(3,4,5,6,7)]
 # colnames(laborWomen) <- c("Country", "Code", "2009", "2012", "2016")
 # laborWomen <- gather(data=laborWomen, key=Year, value="Labor Force Percentage", "2009", "2012", "2016")
+# laborWomen <- laborWomen[!(laborWomen$Country == ""), ]
+# laborWomen <- laborWomen[!is.na(laborWomen$Country), ]
 
