@@ -1,0 +1,86 @@
+---
+title: "Predicting Happiness"
+author: "Aru Fatehpuria, Stella Lee, Yoon Choi"
+date: '2019 10 28 '
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Table of Contents
+
+- Introduction
+- Explanatory Variables
+- Collecting the data
+- The Model
+- Limitations
+- Conclusion
+- References
+- Q&A
+
+## Introduction
+
+- This research examines what determines the happiness of a country by developing our own regression model
+- Assess the best explanatory variables to predict the happiness index of the country through a reduced model
+
+## Explanatory Variables
+- Country
+- Region (Each region code groups country by similar region)
+- HPI (Happy Planet Index Score)
+- HPIRank (Ranking of Happy Planet Index Score)
+- Year
+- Code (Country Code)
+- Internet (Individuals using the Internet (% of population)
+- LifeExpect (Life expectancy at birth, total (years))
+- GovHealth (Domestic general gov health expenditure per capita, PPP (current international $))
+- PriHealth (Domestic private health expenditure per capita, PPP (current international $))
+
+## Explanatory Variables (Contd.)
+
+- PPP (GDP per capita, PPP (current international $))
+- PopDensity (Population density (people per sq. km of land area))
+- UnEmployment (Unemployment, total (% of total labor force) (modeled ILO estimate))
+- SocialSupport (Social Support)
+- FreedomToChoice (Freedom to make life choices)
+- Corruption (Perception to Corruption)
+- LaborForceWomen (Labor force participation of women)
+- WomenParliament (Proportion of seats held by women in national parliaments (% of seats))
+
+## Collecting the data
+- Responsible variable from HPI rank based on different values of the explanatory variables 
+- The HPI value is collected in 2009, 2012, 2016 (from various sources: Gallup Poll, census data)
+
+## The Model
+
+- Bullet 1
+- Bullet 2
+- Bullet 3
+
+## Limitations
+- Aggregate Data
+- No consistent data on poorer country
+
+## Conclusion
+
+
+## References
+
+
+## Q&A
+
+Any questions?
+
+## Slide with R Output
+
+```{r cars, echo = TRUE}
+summary(cars)
+```
+
+## Slide with Plot
+
+```{r pressure}
+plot(pressure)
+```
+
