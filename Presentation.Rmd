@@ -31,7 +31,6 @@ knitr::opts_chunk$set(echo = FALSE)
 - HPI (Happy Planet Index Score)
 - HPIRank (Ranking of Happy Planet Index Score)
 - Year
-- Code (Country Code)
 - Internet (Individuals using the Internet (% of population)
 - LifeExpect (Life expectancy at birth, total (years))
 - GovHealth (Domestic general gov health expenditure per capita, PPP (current international $))
@@ -49,14 +48,26 @@ knitr::opts_chunk$set(echo = FALSE)
 - WomenParliament (Proportion of seats held by women in national parliaments (% of seats))
 
 ## Collecting the data
-- Responsible variable from HPI rank based on different values of the explanatory variables 
-- The HPI value is collected in 2009, 2012, 2016 (from various sources: Gallup Poll, census data)
+
+429 observations total
+
+1. Happy Planet Index
+  - HPI value is collected in 2009, 2012, 2016 based on various sources (Gallup Poll, census data)
+2. WorldBank
+  - Potential predictors of the country's happiness score was collected from WorldBank
 
 ## The Model
 
 - Bullet 1
 - Bullet 2
 - Bullet 3
+
+## Extra Sum of Squares Model
+
+After building our final model for HPI scores, we were also interested if following factors makes the model better:
+  - Labor force participation of women
+  - Proportion of seats held by women in national parliaments (% of seats)
+
 
 ## Limitations
 - Aggregate Data
@@ -83,4 +94,3 @@ summary(cars)
 ```{r pressure}
 plot(pressure)
 ```
-
