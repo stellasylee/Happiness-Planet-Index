@@ -1,10 +1,29 @@
 # World Happiness Planet Index
 
-This research will examine what determines the happiness of a country and will focus on developing our own model to predict happiness of country. Our response variable is the Happiness Planet Index (https://worldhappiness.report/ed/2018/?fbclid=IwAR37naSOvjBPwztHvARL7I3J4F60H7yD2-9DUuO98Xrb1HJsBsk2U0_EdQs) rank based on different values of the explanatory variables. The HPI value is collected in 2009, 2012, 2016. The index is based partly on information gathered by Gallup Poll but also on census data such as life expectancy, GPD, population, etc. In this research, we will develop regression model to assess the best explanatory variables to predict the happiness index of the country. Furthermore, we are planning to compare HPI between region. The sample size of 2009 is 143, 2012 is 150, and 2016 is 140. Therefore, we have total 433 observations.  
+This research will examine what determines the happiness of a country and will focus on developing our own model to predict happiness of country. Our response variable is the Happiness Planet Index (https://worldhappiness.report/ed/2018/?fbclid=IwAR37naSOvjBPwztHvARL7I3J4F60H7yD2-9DUuO98Xrb1HJsBsk2U0_EdQs) rank based on different values of the explanatory variables. The HPI value is collected in 2009, 2012, 2016. The index is based partly on information gathered by Gallup Poll but also on census data such as life expectancy, GPD, population, etc. In this research, we will develop regression model to assess the best explanatory variables to predict the happiness index of the country. Furthermore, we are planning to compare HPI between region. The sample size of 2009 is 143, 2012 is 150, and 2016 is 140. Therefore, we have a total of 433 observations.  
 
 Our explanatory variables include:
-  * Region
-  * Year
+  * Region 
+   - 1a -  Central America, Mexico & Carribean
+   - 1b - South America 
+   - 2a - Australia & NZ
+   - 2b - North America
+   - 2c - Western Europe
+   - 2d - Nordic Europe
+   - 2e - Southern Europe
+   - 3a - North Africa
+   - 3b - Middle East / South West Asia
+   - 4a - Southern & Central Africa
+   - 4b - East Africa
+   - 4c - West Africa
+   - 5a - South Asia
+   - 6a - China
+   - 6b - Wealthy East Asia
+   - 6c - South East Asia
+   - 7a - Central Asia & Caucuses
+   - 7b - Central & Eastern Europe
+   - 7c - Russia, Ukraine & Belarus
+  * Year - 2009, 2012, 2016
   * Life Expectancy at birth (in years)
   * Population Density (people/$km^2$ land area)
   * Purchasing Power Parity (PPP)
