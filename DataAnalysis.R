@@ -50,4 +50,18 @@ model_transform <- lm (HPI ~ factor(Region) + factor(Year) + Internet + LifeExpe
              data = HPIdata)
 anova(model_transform)
 
+#Best subsets 
+
+require(leaps)
+full_data=cbind(factor(HPIdata$Region), factor(HPIdata$Year), HPIdata$Internet, HPIdata$LifeExpect, HPIdata$GovHealth, HPIdata$PriHealth, HPIdata$PPP, log(HPIdata$PopDensity),HPIdata$UnEmployment, HPIdata$FreedomToChoice, HPIdata$Corruption)
+
+row.has.na1 <- apply(HPIdata, 1, function(x){any(is.na(x))})
+
+HPIdata.filtered <- HPIdata[!row.has.na,]
+
+best.lm <- leaps(HPI.data.filtered,HPIdata.filtered$HPI, method = "adjr2", names = c('Region','Year','Internet','Life Expectancy','Gov Health','PriHealth','PPP','Log PopDensity','Unemployment','Freedom to Choice','Corruption'), nbest=3)
+
+data1 = cbind(best.lm$which,best.lm$adjr2)
+View(data1)
+
 # Extra Sum of Squares for WomenParliamant and LaborForceFemale
