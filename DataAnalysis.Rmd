@@ -1,0 +1,124 @@
+---
+title: "Data Analysis"
+author: "Stella Lee, Yoon Choi, Aru Fatehpuria"
+date: "10/29/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+# Packages
+library(dplyr)
+library(ggplot2)
+library(mosaic)
+library(stringr)
+library(leaps)
+library(gridExtra)
+library(cowplot)
+```
+
+# Upload Dataset
+
+```{r warning=FALSE}
+HPIdata <- read.csv("https://raw.githubusercontent.com/stellasylee/Happiness-Planet-Index/master/finalDataset.csv")[-1]
+# Change columns into numeric
+HPIdata$RegionNum <- as.numeric(substring(HPIdata$Region, 1, 1))
+HPIdata$GovHealth <- as.numeric(as.character(HPIdata$GovHealth))
+HPIdata$PriHealth <- as.numeric(as.character(HPIdata$PriHealth))
+HPIdata$PPP <- as.numeric(as.character(HPIdata$PPP))
+HPIdata$PopDensity <- as.numeric(as.character(HPIdata$PopDensity))
+HPIdata$WomenParliamant <- as.numeric(as.character(HPIdata$WomenParliamant))
+```
+
+Count how many missing rows within a column
+
+```{r}
+sum(is.na(HPIdata$SocialSupport))
+sum(is.na(HPIdata$UnEmployment))
+```
+
+## Main Effect plots without data transformation
+```{r warning=FALSE}
+Internet <- ggplot(data = HPIdata, aes(x = Internet, y = HPI)) + geom_point()  +
+  aes(colour = factor(RegionNum)) + theme(legend.position = "right") + labs(title = "Internet")
+LifeExpect <- ggplot(data = HPIdata, aes(x = LifeExpect, y = HPI)) + geom_point()  +
+  aes(colour = factor(RegionNum)) + theme(legend.position = "right") + labs(title = "Life Expectency (yr)")
+GovHealth <- ggplot(data = HPIdata, aes(x = GovHealth, y = HPI)) + geom_point()  +
+  aes(colour = factor(RegionNum)) + theme(legend.position = "right") + labs(title = "Government Health Expenditure")
+PriHealth <- ggplot(data = HPIdata, aes(x = PriHealth, y = HPI)) + geom_point()  +
+  aes(colour = factor(RegionNum)) + theme(legend.position = "right") + labs(title = "Private Health Expenditure")
+PPP <- ggplot(data = HPIdata, aes(x = PPP, y = HPI)) + geom_point()  +
+  aes(colour = factor(RegionNum)) + theme(legend.position = "right") + labs(title = "Purchasing Power")
+PopDen <- ggplot(data = HPIdata, aes(x = PopDensity, y = HPI)) + geom_point()  +
+  aes(colour = factor(RegionNum)) + theme(legend.position = "right") + labs(title = "Population Density")
+Unemploy <- ggplot(data = HPIdata, aes(x = UnEmployment, y = HPI)) + geom_point()  +
+  aes(colour = factor(RegionNum)) + theme(legend.position = "right") + labs(title = "Unemployment")
+Freedom <- ggplot(data = HPIdata, aes(x = FreedomToChoice, y = HPI)) + geom_point()  +
+  aes(colour = factor(RegionNum)) + theme(legend.position = "right") + labs(title = "Freedom to Choice")
+
+#grid.arrange(Internet, LifeExpect, GovHealth, PriHealth, PPP, PopDen, Unemploy, Freedom, ncol = 2)
+grid.arrange(Internet, LifeExpect, GovHealth, PriHealth, ncol = 2)
+grid.arrange(PPP, PopDen, Unemploy, Freedom, ncol = 2)
+```
+
+## Transformation in explanatory variables
+
+```PopDensity```, ```PPP```, ```GovHealth```, ```PriHealth``` contains extreme values -> log transformation
+
+```{r}
+GovHealth <- ggplot(data = HPIdata, aes(x = GovHealth, y = HPI)) + geom_point()  +
+  aes(colour = factor(RegionNum)) + theme(legend.position = "right") + labs(title = "Government Health Expenditure")
+GovHealthlog <- ggplot(data = HPIdata, aes(x = log(GovHealth), y = HPI)) + geom_point()  +
+  aes(colour = factor(RegionNum)) + theme(legend.position = "right") + labs(title = "Government Health Expenditure")
+PriHealth <- ggplot(data = HPIdata, aes(x = PriHealth, y = HPI)) + geom_point()  +
+  aes(colour = factor(RegionNum)) + theme(legend.position = "right") + labs(title = "Private Health Expenditure")
+PriHealthlog <- ggplot(data = HPIdata, aes(x = log(PriHealth), y = HPI)) + geom_point()  +
+  aes(colour = factor(RegionNum)) + theme(legend.position = "right") + labs(title = "Private Health Expenditure")
+PPP <- ggplot(data = HPIdata, aes(x = PPP, y = HPI)) + geom_point()  +
+  aes(colour = factor(RegionNum)) + theme(legend.position = "right") + labs(title = "Purchasing Power")
+PPPlog <- ggplot(data = HPIdata, aes(x = log(PPP), y = HPI)) + geom_point()  +
+  aes(colour = factor(RegionNum)) + theme(legend.position = "right") + labs(title = "Purchasing Power")
+PopDen <- ggplot(data = HPIdata, aes(x = PopDensity, y = HPI)) + geom_point()  +
+  aes(colour = factor(RegionNum)) + theme(legend.position = "right") + labs(title = "Population Density")
+PopDenlog <- ggplot(data = HPIdata, aes(x = log(PopDensity), y = HPI)) + geom_point()  +
+  aes(colour = factor(RegionNum)) + theme(legend.position = "right") + labs(title = "Population Density")
+grid.arrange(GovHealth, GovHealthlog, PriHealth, PriHealthlog, ncol = 2)
+grid.arrange(PPP, PPPlog, PopDen, PopDenlog, ncol = 2)
+```
+
+## Best Subset
+
+```{r}
+full_data=cbind(factor(HPIdata$Region), factor(HPIdata$Year), HPIdata$Internet, HPIdata$LifeExpect, HPIdata$GovHealth, log(HPIdata$GovHealth), HPIdata$PriHealth, log(HPIdata$PriHealth), HPIdata$PPP, log(HPIdata$PPP), HPIdata$PopDensity,log(HPIdata$PopDensity),HPIdata$UnEmployment, HPIdata$FreedomToChoice, HPIdata$Corruption)
+
+row.has.na <- apply(HPIdata, 1, function(x){any(is.na(x))})
+HPIdata.filtered <- HPIdata[!row.has.na,]
+full_explanatory_filtered <- full_data[!row.has.na,]
+
+best.lm <- leaps(full_explanatory_filtered,HPIdata.filtered$HPI, method = "adjr2", names = c('Region','Year','Internet','Life Expectancy','Gov Health','log Gov Health', 'PriHealth','log PriHealth','PPP','log PPP', 'PopDen','Log PopDensity','Unemployment','Freedom to Choice','Corruption'), nbest=3)
+data1 = cbind(best.lm$which,best.lm$adjr2)
+```
+
+## Final Model
+```{r}
+model_transform <- lm (HPI ~ factor(Region) + Internet + LifeExpect + log(GovHealth)  + PriHealth + log(PriHealth) + PPP +
+                         log(PopDensity) + UnEmployment,
+                       data = HPIdata)
+anova(model_transform)
+summary(model_transform)
+
+model_transform <- lm (HPI ~ factor(Region) + Internet + LifeExpect + log(GovHealth)  + log(PriHealth) + PPP +
+                         log(PopDensity),
+                       data = HPIdata)
+anova(model_transform)
+summary(model_transform)
+plot(model_transform)
+```
+
+## HPI map
+
+## Extra Sum of Squares for WomenParliamant and LaborForceFemale
+
+
+
+
