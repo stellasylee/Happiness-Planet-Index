@@ -4,25 +4,6 @@ This research will examine what determines the happiness of a country and will f
 
 Our explanatory variables include:
   * Region 
-   - 1a -  Central America, Mexico & Carribean
-   - 1b - South America 
-   - 2a - Australia & NZ
-   - 2b - North America
-   - 2c - Western Europe
-   - 2d - Nordic Europe
-   - 2e - Southern Europe
-   - 3a - North Africa
-   - 3b - Middle East / South West Asia
-   - 4a - Southern & Central Africa
-   - 4b - East Africa
-   - 4c - West Africa
-   - 5a - South Asia
-   - 6a - China
-   - 6b - Wealthy East Asia
-   - 6c - South East Asia
-   - 7a - Central Asia & Caucuses
-   - 7b - Central & Eastern Europe
-   - 7c - Russia, Ukraine & Belarus
   * Year - 2009, 2012, 2016
   * Life Expectancy at birth (in years)
   * Population Density (people/$km^2$ land area)
@@ -56,3 +37,26 @@ After building our final model, we want to focus if the following factors produc
   * Domestic private health expenditure
   * Central Government Debt
   * Children out of primary school at school age (% female)
+
+
+## Data description
+Region 
+   - 1a -  Central America, Mexico & Carribean
+   - 1b - South America 
+   - 2a - Australia & NZ
+   - 2b - North America
+   - 2c - Western Europe
+   - 2d - Nordic Europe
+   - 2e - Southern Europe
+   - 3a - North Africa
+   - 3b - Middle East / South West Asia
+   - 4a - Southern & Central Africa
+   - 4b - East Africa
+   - 4c - West Africa
+   - 5a - South Asia
+   - 6a - China
+   - 6b - Wealthy East Asia
+   - 6c - South East Asia
+   - 7a - Central Asia & Caucuses
+   - 7b - Central & Eastern Europe
+   - 7c - Russia, Ukraine & Belarus
