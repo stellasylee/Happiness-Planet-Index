@@ -171,3 +171,45 @@ anova(model_transform, model_lab_force)
 
 anova(model_transform, model_wom_parl)
 ```
+
+## HPI map
+```{r}
+library(maps) 
+# load world map
+BaseMap <- map_data("world")
+ggplot() + 
+  geom_polygon(data=BaseMap, aes(x=long, y=lat, group=group),
+                color="black", fill="lightblue" )
+colnames(BaseMap) <- c(colnames(BaseMap)[1:4], "Country", "subregion")
+BaseMap$Country <- as.character(BaseMap$Country)
+
+anti_join(HPIdata, BaseMap, by="Country")
+BaseMap$Country[BaseMap$Country == "Republic of Congo"] <- "Congo, Rep."
+BaseMap$Country[BaseMap$Country == "Democratic Republic of the Congo"] <- "Congo, Dem. Rep."
+BaseMap$Country[BaseMap$Country == "Hong Kong"] <- "Hong Kong"
+BaseMap$Country[BaseMap$Country == "South Korea"] <- "Korea, Rep."
+BaseMap$Country[BaseMap$Country == "Burma"] <- "Trinidad"
+BaseMap$Country[BaseMap$Country == "UK"] <- "United Kingdom"
+BaseMap$Country[BaseMap$Country == "USA"] <- "United States"
+
+BaseMap$Country <- as.character(BaseMap$Country)
+HPIdata$Country <- as.character(HPIdata$Country)
+HPIwithLocation <- inner_join(BaseMap, HPIdata, by = "Country")
+
+p09 <- ggplot() + geom_polygon(data=filter(HPIwithLocation, Year == 2009), aes(x=long, y=lat, group=group, fill = HPI), 
+                             color="white", size = 0.2) + 
+  scale_fill_gradient(name="HPI score", 
+            low = "red", high = "blue", limits = c(0,80), na.value = "grey50") +
+  labs(title="HPI score in 2009")
+p12 <- ggplot() + geom_polygon(data=filter(HPIwithLocation, Year == 2012), aes(x=long, y=lat, group=group, fill = HPI), 
+                             color="white", size = 0.2) + 
+ scale_fill_gradient(name="HPI score", 
+            low = "red", high = "blue", limits = c(0,80), na.value = "grey50") +
+  labs(title="HPI score in 2012")
+p16 <- ggplot() + geom_polygon(data=filter(HPIwithLocation, Year == 2016), aes(x=long, y=lat, group=group, fill = HPI), 
+                             color="white", size = 0.2) + 
+  scale_fill_gradient(name="HPI score", 
+            low = "red", high = "blue", limits = c(0,80), na.value = "grey50") +
+  labs(title="HPI score in 2016")
+p09
+```
