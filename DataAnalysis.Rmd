@@ -101,6 +101,8 @@ data1 = cbind(best.lm$which,best.lm$adjr2)
 
 ## Final Model
 ```{r}
+row.has.na.final <- apply(HPIdata[1:15], 1, function(x){any(is.na(x))})
+finalData <- HPIdata[!row.has.na.final,]
 model_transform <- lm (HPI ~ factor(Region) + Internet + LifeExpect + log(GovHealth)  + PriHealth + log(PriHealth) + PPP +
                          log(PopDensity) + UnEmployment,
                        data = HPIdata)
