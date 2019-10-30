@@ -151,6 +151,43 @@ grid.arrange(Pri, PPP, Pop, ncol = 2)
 #PPP
 ```
 
+
+## Interaction plot of the final model
+
+```{r}
+# Interaction with region & internet: 3b (Middle East / South West Asia: 0.02561), 4a (Southern & Central Africa: 0.02042), 7b (Central & Eastern Europe: 0.00182)
+# Anova: 0.11500
+region_internet <- lm (HPI ~ factor(Region) + Internet + LifeExpect + log(GovHealth) + log(PriHealth) + PPP  + log(PopDensity) + factor(Region)*Internet, data = finalData)
+
+# Interaction with region & LifeExpect: 3a (North Africa: 0.006482), 3b (Middle East / South West Asia: 1.57e-07), 4a (Southern & Central Africa: 0.000214), 4b(East Africa: 1.04e-06), 5a(South Asia: 0.011167), 7b (Central & Eastern Europe: 0.001128)
+# Anova: 2.579e-05
+region_le <- lm (HPI ~ factor(Region) + Internet + LifeExpect + log(GovHealth) + log(PriHealth) + PPP  + log(PopDensity) + factor(Region)*LifeExpect, data = finalData)
+
+# Interaction with region & log(GovHealth): 3a (North Africa: 0.011573), 4a (Southern & Central Africa: 0.000588), 4b (East Africa: 0.022740), 7a (Central Asia & Caucuses: 0.000625), 7b (Central & Eastern Europe: 0.004876)
+# Anova: 0.0009153
+region_gh <- lm (HPI ~ factor(Region) + Internet + LifeExpect + log(GovHealth) + log(PriHealth) + PPP  + log(PopDensity) + factor(Region)*log(GovHealth), data = finalData)
+
+# Interaction with region & log(PriHealth): 2b (North America: 0.02771), 4a (Southern & Central Africa: 0.00378), 5a (South Asia: 0.03188), 6b (Wealthy East Asia: 0.04037), 7a (Central Asia & Caucuses: 0.01119)
+# Anova: 0.001166 
+region_ph <- lm (HPI ~ factor(Region) + Internet + LifeExpect + log(GovHealth) + log(PriHealth) + PPP  + log(PopDensity) + factor(Region)*log(PriHealth), data = finalData)
+
+# Interaction with region & PPP: 4a (Southern & Central Africa: 0.022310), 4c (West Africa: 0.003436), 7a (Central Asia & Caucuses: 0.037789)
+# Anova: 0.004437
+region_ppp <- lm (HPI ~ factor(Region) + Internet + LifeExpect + log(GovHealth) + log(PriHealth) + PPP  + log(PopDensity) + factor(Region)*PPP, data = finalData)
+
+#Interaction with region and log(PopDensity): 2b (North America: 0.002350), 2d (Nordic Europe: 0.001224), 3b (Middle East / South West Asia: < 2e-16), 4b (East Africa: 2.35e-07), 4c(West Africa: 8.28e-06), 5a (South Asia: 1.35e-05), 7b (Central & Eastern Europe: 0.024437), 7c (Russia, Ukraine & Belarus: 0.045916)
+# Anova: < 2.2e-16
+region_pop <- lm (HPI ~ factor(Region) + Internet + LifeExpect + log(GovHealth) + log(PriHealth) + PPP  + log(PopDensity) + factor(Region)*log(PopDensity), data = finalData)
+
+# Interaction with log(PriHealth) & log(GovHealth)
+# Anova: 0.93443
+gov_pri <- lm (HPI ~ factor(Region) + Internet + LifeExpect + log(GovHealth) + log(PriHealth) + PPP  + log(PopDensity) + log(GovHealth)*log(PriHealth), data = finalData)
+
+anova(region_internet)
+summary(region_ph)
+plot(gov_pri)
+```
+
 ## Extra Sum of Squares for WomenParliamant and LaborForceFemale
  - Need to see whether we should delete Gov Health from these tests
 ```{r}
