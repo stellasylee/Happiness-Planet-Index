@@ -55,7 +55,6 @@ Unemploy <- ggplot(data = HPIdata, aes(x = UnEmployment, y = HPI)) + geom_point(
   aes(colour = factor(RegionNum)) + theme(legend.position = "right") + labs(title = "Unemployment")
 Freedom <- ggplot(data = HPIdata, aes(x = FreedomToChoice, y = HPI)) + geom_point()  +
   aes(colour = factor(RegionNum)) + theme(legend.position = "right") + labs(title = "Freedom to Choice")
-
 #grid.arrange(Internet, LifeExpect, GovHealth, PriHealth, PPP, PopDen, Unemploy, Freedom, ncol = 2)
 grid.arrange(Internet, LifeExpect, GovHealth, PriHealth, ncol = 2)
 grid.arrange(PPP, PopDen, Unemploy, Freedom, ncol = 2)
@@ -64,7 +63,6 @@ grid.arrange(PPP, PopDen, Unemploy, Freedom, ncol = 2)
 ## Transformation in explanatory variables
 
 ```PopDensity```, ```PPP```, ```GovHealth```, ```PriHealth``` contains extreme values -> log transformation
-
 ```{r}
 GovHealth <- ggplot(data = HPIdata, aes(x = GovHealth, y = HPI)) + geom_point()  +
   aes(colour = factor(RegionNum)) + theme(legend.position = "right") + labs(title = "Government Health Expenditure")
@@ -90,25 +88,37 @@ grid.arrange(PPP, PPPlog, PopDen, PopDenlog, ncol = 2)
 
 ```{r}
 full_data=cbind(factor(HPIdata$Region), factor(HPIdata$Year), HPIdata$Internet, HPIdata$LifeExpect, HPIdata$GovHealth, log(HPIdata$GovHealth), HPIdata$PriHealth, log(HPIdata$PriHealth), HPIdata$PPP, log(HPIdata$PPP), HPIdata$PopDensity,log(HPIdata$PopDensity),HPIdata$UnEmployment, HPIdata$FreedomToChoice, HPIdata$Corruption)
-
 row.has.na <- apply(HPIdata, 1, function(x){any(is.na(x))})
 HPIdata.filtered <- HPIdata[!row.has.na,]
 full_explanatory_filtered <- full_data[!row.has.na,]
-
 best.lm <- leaps(full_explanatory_filtered,HPIdata.filtered$HPI, method = "adjr2", names = c('Region','Year','Internet','Life Expectancy','Gov Health','log Gov Health', 'PriHealth','log PriHealth','PPP','log PPP', 'PopDen','Log PopDensity','Unemployment','Freedom to Choice','Corruption'), nbest=3)
 data1 = cbind(best.lm$which,best.lm$adjr2)
+
+#With 8 variables - R2 of 0.751
+
+model_trans_8 <-  lm (HPI ~ factor(Region) + Internet + LifeExpect + log(GovHealth) + PPP + log(PPP) + log(PopDensity) + FreedomToChoice, data = HPIdata)
+anova(model_trans_8)
+summary(model_trans_8)
+
+#9 variable model - R2 of  0.7842 
+
+row.has.na.final <- apply(HPIdata[1:15], 1, function(x){any(is.na(x))})
+finalData <- HPIdata[!row.has.na.final,]
+model_trans_9 <- lm (HPI ~ factor(Region) + Internet + LifeExpect + log(GovHealth)  + PriHealth + log(PriHealth) + PPP +
+                         log(PopDensity) + UnEmployment,
+                       data = HPIdata)
+anova(model_trans_9)
+summary(model_trans_9)
+
+#With 10 variables - R2 of 0.7843
+
+model_trans_10 <-  lm (HPI ~ factor(Region) + Internet + LifeExpect + log(GovHealth) + PriHealth + log(PriHealth) + PPP + log(PPP) + log(PopDensity) + UnEmployment, data = HPIdata)
+anova(model_trans_10)
+summary(model_trans_10)
 ```
 
 ## Final Model
 ```{r}
-row.has.na.final <- apply(HPIdata[1:15], 1, function(x){any(is.na(x))})
-finalData <- HPIdata[!row.has.na.final,]
-model_transform <- lm (HPI ~ factor(Region) + Internet + LifeExpect + log(GovHealth)  + PriHealth + log(PriHealth) + PPP +
-                         log(PopDensity) + UnEmployment,
-                       data = HPIdata)
-anova(model_transform)
-summary(model_transform)
-
 model_transform <- lm (HPI ~ factor(Region) + Internet + LifeExpect + log(GovHealth)  + log(PriHealth) + PPP +
                          log(PopDensity),
                        data = HPIdata)
@@ -120,7 +130,3 @@ plot(model_transform)
 ## HPI map
 
 ## Extra Sum of Squares for WomenParliamant and LaborForceFemale
-
-
-
-
