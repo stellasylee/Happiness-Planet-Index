@@ -150,3 +150,24 @@ grid.arrange(Pri, PPP, Pop, ncol = 2)
 ## HPI map
 
 ## Extra Sum of Squares for WomenParliamant and LaborForceFemale
+```{r}
+#With WomenParliament 
+
+model_wom_parl <- lm (HPI ~ factor(Region) + Internet + LifeExpect + log(GovHealth)  + log(PriHealth) + PPP +
+                         log(PopDensity)+ WomenParliamant,
+                       data = finalData)
+
+summary(model_wom_parl) #R2 of 0.7832 
+
+#With Labor Force Female 
+
+model_lab_force <- lm (HPI ~ factor(Region) + Internet + LifeExpect + log(GovHealth)  + log(PriHealth) + PPP +
+                         log(PopDensity)+ LaborForceFemale*LaborForceFemale,
+                       data = finalData)
+
+summary(model_lab_force) #0.7908 
+
+anova(model_transform, model_lab_force)
+
+anova(model_transform, model_wom_parl)
+```
