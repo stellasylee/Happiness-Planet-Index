@@ -94,37 +94,57 @@ full_explanatory_filtered <- full_data[!row.has.na,]
 best.lm <- leaps(full_explanatory_filtered,HPIdata.filtered$HPI, method = "adjr2", names = c('Region','Year','Internet','Life Expectancy','Gov Health','log Gov Health', 'PriHealth','log PriHealth','PPP','log PPP', 'PopDen','Log PopDensity','Unemployment','Freedom to Choice','Corruption'), nbest=3)
 data1 = cbind(best.lm$which,best.lm$adjr2)
 
-#With 8 variables - R2 of 0.751
-
+# With 8 variables - R2 of 0.751
 model_trans_8 <-  lm (HPI ~ factor(Region) + Internet + LifeExpect + log(GovHealth) + PPP + log(PPP) + log(PopDensity) + FreedomToChoice, data = HPIdata)
 anova(model_trans_8)
 summary(model_trans_8)
 
-#9 variable model - R2 of  0.7842 
-
+# 9 variable model - R2 of  0.7842 
 row.has.na.final <- apply(HPIdata[1:15], 1, function(x){any(is.na(x))})
 finalData <- HPIdata[!row.has.na.final,]
-model_trans_9 <- lm (HPI ~ factor(Region) + Internet + LifeExpect + log(GovHealth)  + PriHealth + log(PriHealth) + PPP +
+model_trans_9 <- lm (HPI ~ factor(Region) + Internet + LifeExpect + log(GovHealth) + PriHealth + log(PriHealth) + PPP +
                          log(PopDensity) + UnEmployment,
                        data = HPIdata)
 anova(model_trans_9)
 summary(model_trans_9)
 
-#With 10 variables - R2 of 0.7843
-
+# With 10 variables - R2 of 0.7843
 model_trans_10 <-  lm (HPI ~ factor(Region) + Internet + LifeExpect + log(GovHealth) + PriHealth + log(PriHealth) + PPP + log(PPP) + log(PopDensity) + UnEmployment, data = HPIdata)
 anova(model_trans_10)
 summary(model_trans_10)
 ```
 
 ## Final Model
+
 ```{r}
-model_transform <- lm (HPI ~ factor(Region) + Internet + LifeExpect + log(GovHealth)  + log(PriHealth) + PPP +
-                         log(PopDensity),
+model_transform <- lm (HPI ~ factor(Region) + Internet + LifeExpect + log(GovHealth) + log(PriHealth) + PPP + log(PopDensity),
                        data = HPIdata)
 anova(model_transform)
 summary(model_transform)
 plot(model_transform)
+```
+
+## Residual Plots for final model
+
+```{r}
+res <- model_transform$residuals
+plot(model_transform$fitted.values, finalData$HPI)
+plot(model_transform)
+
+ggplot(data = HPIdata, aes(x = log(PPP), y = HPI)) + geom_point()  +
+  aes(colour = factor(RegionNum)) + theme(legend.position = "right") + labs(title = "Purchasing Power")
+finalWithRes <- cbind.data.frame(finalData, res)
+
+In <- ggplot(data=finalWithRes, aes(x = Internet, y = res)) + geom_point() + geom_hline(yintercept = 0) + labs(title = "Internet")
+Li <- ggplot(data=finalWithRes, aes(x = LifeExpect, y = res)) + geom_point() + geom_hline(yintercept = 0) + labs(title = "Life Expectency")
+Go <- ggplot(data=finalWithRes, aes(x = log(GovHealth), y = res)) + geom_point() + geom_hline(yintercept = 0) + labs(title = "GovHealth")
+Pri <- ggplot(data=finalWithRes, aes(x = log(PriHealth), y = res)) + geom_point() + geom_hline(yintercept = 0) + labs(title = "PriHealth")
+PPP <- ggplot(data=finalWithRes, aes(x = PPP, y = res)) + geom_point() + geom_hline(yintercept = 0) + labs(title = "Purchasing Power")
+Pop <- ggplot(data=finalWithRes, aes(x = log(PopDensity), y = res)) + geom_point() + geom_hline(yintercept = 0) + labs(title = "PopDensity")
+
+grid.arrange(In, Li, Go, ncol = 2)
+grid.arrange(Pri, PPP, Pop, ncol = 2)
+#PPP
 ```
 
 ## HPI map
