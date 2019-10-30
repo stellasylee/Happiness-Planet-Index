@@ -63,6 +63,7 @@ grid.arrange(PPP, PopDen, Unemploy, Freedom, ncol = 2)
 ## Transformation in explanatory variables
 
 ```PopDensity```, ```PPP```, ```GovHealth```, ```PriHealth``` contains extreme values -> log transformation
+
 ```{r}
 GovHealth <- ggplot(data = HPIdata, aes(x = GovHealth, y = HPI)) + geom_point()  +
   aes(colour = factor(RegionNum)) + theme(legend.position = "right") + labs(title = "Government Health Expenditure")
@@ -87,14 +88,17 @@ grid.arrange(PPP, PPPlog, PopDen, PopDenlog, ncol = 2)
 ## Best Subset
 
 ```{r}
+# Design matrix for best subset
 full_data=cbind(factor(HPIdata$Region), factor(HPIdata$Year), HPIdata$Internet, HPIdata$LifeExpect, HPIdata$GovHealth, log(HPIdata$GovHealth), HPIdata$PriHealth, log(HPIdata$PriHealth), HPIdata$PPP, log(HPIdata$PPP), HPIdata$PopDensity,log(HPIdata$PopDensity),HPIdata$UnEmployment, HPIdata$FreedomToChoice, HPIdata$Corruption)
 row.has.na <- apply(HPIdata, 1, function(x){any(is.na(x))})
 HPIdata.filtered <- HPIdata[!row.has.na,]
 full_explanatory_filtered <- full_data[!row.has.na,]
+
+# Best subset
 best.lm <- leaps(full_explanatory_filtered,HPIdata.filtered$HPI, method = "adjr2", names = c('Region','Year','Internet','Life Expectancy','Gov Health','log Gov Health', 'PriHealth','log PriHealth','PPP','log PPP', 'PopDen','Log PopDensity','Unemployment','Freedom to Choice','Corruption'), nbest=3)
 data1 = cbind(best.lm$which,best.lm$adjr2)
 
-# With 8 variables - R2 of 0.751
+# 8 variables - R2 of 0.751
 model_trans_8 <-  lm (HPI ~ factor(Region) + Internet + LifeExpect + log(GovHealth) + PPP + log(PPP) + log(PopDensity) + FreedomToChoice, data = HPIdata)
 anova(model_trans_8)
 summary(model_trans_8)
@@ -117,8 +121,11 @@ summary(model_trans_10)
 ## Final Model
 
 ```{r}
-model_transform <- lm (HPI ~ factor(Region) + Internet + LifeExpect + log(GovHealth) + log(PriHealth) + PPP + log(PopDensity),
-                       data = HPIdata)
+row.has.na.final <- apply(HPIdata[1:15], 1, function(x){any(is.na(x))})
+finalData <- HPIdata[!row.has.na.final,]
+
+model_transform <- lm (HPI ~ factor(Region) + Internet + LifeExpect + log(GovHealth) + log(PriHealth) + PPP  + log(PopDensity),
+                       data = finalData)
 anova(model_transform)
 summary(model_transform)
 plot(model_transform)
@@ -130,75 +137,49 @@ plot(model_transform)
 res <- model_transform$residuals
 plot(model_transform$fitted.values, finalData$HPI)
 plot(model_transform)
-
 ggplot(data = HPIdata, aes(x = log(PPP), y = HPI)) + geom_point()  +
   aes(colour = factor(RegionNum)) + theme(legend.position = "right") + labs(title = "Purchasing Power")
 finalWithRes <- cbind.data.frame(finalData, res)
-
 In <- ggplot(data=finalWithRes, aes(x = Internet, y = res)) + geom_point() + geom_hline(yintercept = 0) + labs(title = "Internet")
 Li <- ggplot(data=finalWithRes, aes(x = LifeExpect, y = res)) + geom_point() + geom_hline(yintercept = 0) + labs(title = "Life Expectency")
 Go <- ggplot(data=finalWithRes, aes(x = log(GovHealth), y = res)) + geom_point() + geom_hline(yintercept = 0) + labs(title = "GovHealth")
 Pri <- ggplot(data=finalWithRes, aes(x = log(PriHealth), y = res)) + geom_point() + geom_hline(yintercept = 0) + labs(title = "PriHealth")
 PPP <- ggplot(data=finalWithRes, aes(x = PPP, y = res)) + geom_point() + geom_hline(yintercept = 0) + labs(title = "Purchasing Power")
 Pop <- ggplot(data=finalWithRes, aes(x = log(PopDensity), y = res)) + geom_point() + geom_hline(yintercept = 0) + labs(title = "PopDensity")
-
 grid.arrange(In, Li, Go, ncol = 2)
 grid.arrange(Pri, PPP, Pop, ncol = 2)
 #PPP
-```
-##Trying model with only private and gov health 
-```{r}
-model_gov_health <- lm (HPI ~ factor(Region) + Internet + LifeExpect + log(GovHealth) + PPP +
-                         log(PopDensity),
-                       data = finalData)
-anova(model_gov_health)
-summary(model_gov_health) #0.7815
-
-model_pri_health <- lm (HPI ~ factor(Region) + Internet + LifeExpect + log(PriHealth) + PPP +
-                         log(PopDensity),
-                       data = finalData)
-anova(model_pri_health)
-summary(model_pri_health) #0.784 
 ```
 
 ## Extra Sum of Squares for WomenParliamant and LaborForceFemale
  - Need to see whether we should delete Gov Health from these tests
 ```{r}
-#With WomenParliament 
-
+# With WomenParliament 
 model_wom_parl <- lm (HPI ~ factor(Region) + Internet + LifeExpect +  log(PriHealth) + PPP +
                          log(PopDensity)+ WomenParliamant,
                        data = finalData)
-
 summary(model_wom_parl) #R2 of 0.7834 
-
-#With Labor Force Female 
-
+# With Labor Force Female 
 model_lab_force <- lm (HPI ~ factor(Region) + Internet + LifeExpect + log(PriHealth) + PPP +
                          log(PopDensity)+ LaborForceFemale*LaborForceFemale,
                        data = finalData)
-
 summary(model_lab_force) #0.7912
-
 anova(model_transform, model_lab_force)
 anova(model_transform, model_wom_parl)
-
-anova(model_pri_health, model_lab_force) #p val of 0.0002039 ***
-anova(model_pri_health, model_wom_parl)
+anova(model_transform, model_lab_force) # p-val of 0.0002039 ***
+anova(model_transform, model_wom_parl)
 ```
 
 ## HPI map
+
 ```{r}
 library(maps) 
 # load world map
 BaseMap <- map_data("world")
-ggplot() + 
-  geom_polygon(data=BaseMap, aes(x=long, y=lat, group=group),
-                color="black", fill="lightblue" )
 colnames(BaseMap) <- c(colnames(BaseMap)[1:4], "Country", "subregion")
 BaseMap$Country <- as.character(BaseMap$Country)
 
-anti_join(HPIdata, BaseMap, by="Country")
+# Fix BaseMap Country names to match with HPI data
 BaseMap$Country[BaseMap$Country == "Republic of Congo"] <- "Congo, Rep."
 BaseMap$Country[BaseMap$Country == "Democratic Republic of the Congo"] <- "Congo, Dem. Rep."
 BaseMap$Country[BaseMap$Country == "Hong Kong"] <- "Hong Kong"
@@ -207,6 +188,7 @@ BaseMap$Country[BaseMap$Country == "Burma"] <- "Trinidad"
 BaseMap$Country[BaseMap$Country == "UK"] <- "United Kingdom"
 BaseMap$Country[BaseMap$Country == "USA"] <- "United States"
 
+# Join BaseMap and HPIdata
 BaseMap$Country <- as.character(BaseMap$Country)
 HPIdata$Country <- as.character(HPIdata$Country)
 HPIwithLocation <- inner_join(BaseMap, HPIdata, by = "Country")
@@ -226,5 +208,10 @@ p16 <- ggplot() + geom_polygon(data=filter(HPIwithLocation, Year == 2016), aes(x
   scale_fill_gradient(name="HPI score", 
             low = "red", high = "blue", limits = c(0,80), na.value = "grey50") +
   labs(title="HPI score in 2016")
+
 p09
+p12
+p16
+# visual with HPI rank
+# Plot residuals to see what we predicted was different from original data
 ```
