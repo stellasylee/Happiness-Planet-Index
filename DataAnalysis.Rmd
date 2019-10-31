@@ -274,3 +274,8 @@ p16
 # visual with HPI rank
 # Plot residuals to see what we predicted was different from original data
 ```
+
+## Plot showing multicollinearity between Private Health and Gov Health 
+```{r}
+ggplot(data = finalData, aes(x = GovHealth, y = PriHealth)) + geom_point()  + labs(title = "Multicollinearity between Private and Government Spending on Healthcare")
+```
