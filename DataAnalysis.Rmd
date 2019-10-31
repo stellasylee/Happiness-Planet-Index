@@ -279,3 +279,13 @@ p16
 ```{r}
 ggplot(data = finalData, aes(x = GovHealth, y = PriHealth)) + geom_point()  + labs(title = "Multicollinearity between Private and Government Spending on Healthcare")
 ```
+NPP of extra sum of sqaures model 
+```{r}
+#Residual plot 
+plot(model_lab_force)
+
+#Fit vs Actual HPI in ESS model 
+plot(model_lab_force$fitted.values, finalData$HPI)
+
+
+```
