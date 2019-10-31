@@ -237,7 +237,6 @@ library(maps)
 BaseMap <- map_data("world")
 colnames(BaseMap) <- c(colnames(BaseMap)[1:4], "Country", "subregion")
 BaseMap$Country <- as.character(BaseMap$Country)
-
 # Fix BaseMap Country names to match with HPI data
 BaseMap$Country[BaseMap$Country == "Republic of Congo"] <- "Congo, Rep."
 BaseMap$Country[BaseMap$Country == "Democratic Republic of the Congo"] <- "Congo, Dem. Rep."
@@ -246,35 +245,106 @@ BaseMap$Country[BaseMap$Country == "South Korea"] <- "Korea, Rep."
 BaseMap$Country[BaseMap$Country == "Burma"] <- "Trinidad"
 BaseMap$Country[BaseMap$Country == "UK"] <- "United Kingdom"
 BaseMap$Country[BaseMap$Country == "USA"] <- "United States"
-
 # Join BaseMap and HPIdata
 BaseMap$Country <- as.character(BaseMap$Country)
 HPIdata$Country <- as.character(HPIdata$Country)
 HPIwithLocation <- inner_join(BaseMap, HPIdata, by = "Country")
 
+# Maps with HPI Score
 p09 <- ggplot() + geom_polygon(data=filter(HPIwithLocation, Year == 2009), aes(x=long, y=lat, group=group, fill = HPI), 
                              color="white", size = 0.2) + 
   scale_fill_gradient(name="HPI score", 
-            low = "red", high = "blue", limits = c(0,80), na.value = "grey50") +
+            low = "lightblue", high = "darkblue", limits = c(0,80), na.value = "grey50") +
   labs(title="HPI score in 2009")
 p12 <- ggplot() + geom_polygon(data=filter(HPIwithLocation, Year == 2012), aes(x=long, y=lat, group=group, fill = HPI), 
                              color="white", size = 0.2) + 
  scale_fill_gradient(name="HPI score", 
-            low = "red", high = "blue", limits = c(0,80), na.value = "grey50") +
+            low = "lightblue", high = "darkblue", limits = c(0,80), na.value = "grey50") +
   labs(title="HPI score in 2012")
 p16 <- ggplot() + geom_polygon(data=filter(HPIwithLocation, Year == 2016), aes(x=long, y=lat, group=group, fill = HPI), 
                              color="white", size = 0.2) + 
   scale_fill_gradient(name="HPI score", 
-            low = "red", high = "blue", limits = c(0,80), na.value = "grey50") +
+            low = "lightblue", high = "darkblue", limits = c(0,80), na.value = "grey50") +
   labs(title="HPI score in 2016")
-
 p09
 p12
 p16
-# visual with HPI rank
-# Plot residuals to see what we predicted was different from original data
+
+# Maps with HPI Rank
+p09 <- ggplot() + geom_polygon(data=filter(HPIwithLocation, Year == 2009), aes(x=long, y=lat, group=group, fill = HPIRank), 
+                             color="white", size = 0.2) + 
+  scale_fill_gradient(name="HPI Rank", 
+            low = "lightblue", high = "darkblue", limits = c(1,143), na.value = "grey50") +
+  labs(title="HPI Rank in 2009")
+p12 <- ggplot() + geom_polygon(data=filter(HPIwithLocation, Year == 2012), aes(x=long, y=lat, group=group, fill = HPIRank), 
+                             color="white", size = 0.2) + 
+ scale_fill_gradient(name="HPI Rank", 
+            low = "lightblue", high = "darkblue", limits = c(1,143), na.value = "grey50") +
+  labs(title="HPI Rank in 2012")
+p16 <- ggplot() + geom_polygon(data=filter(HPIwithLocation, Year == 2016), aes(x=long, y=lat, group=group, fill = HPIRank), 
+                             color="white", size = 0.2) + 
+  scale_fill_gradient(name="HPI Rank", 
+            low = "lightblue", high = "darkblue", limits = c(1,143), na.value = "grey50") +
+  labs(title="HPI Rank in 2016")
+p09
+p12
+p16
 ```
 
+# Residual plots in the world map
+```{r}
+finalwithModelResult <- cbind.data.frame(finalData, Res = model_transform$residuals, Fitted =  model_transform$fitted.values)
+# Join BaseMap and modelresult
+finalwithModelResult$Country = as.character(finalwithModelResult$Country)
+BaseMap$Country = as.character(BaseMap$Country)
+finalwithLocation <- inner_join(BaseMap, finalwithModelResult, by = "Country")
+p09 <- ggplot() + geom_polygon(data=filter(finalwithLocation, Year == 2009), aes(x=long, y=lat, group=group, fill = Res), color="white", size = 0.2) + 
+  scale_fill_gradient2(name="Residuals", 
+            low = "darkblue", high = "darkblue", mid="lightblue", midpoint=0, limits =  c(-25,25), na.value = "grey50") +
+  labs(title="Residuals for 2009")
+p12 <- ggplot() + geom_polygon(data=filter(finalwithLocation, Year == 2012), aes(x=long, y=lat, group=group, fill = Res), 
+                             color="white", size = 0.2) + 
+ scale_fill_gradient2(name="Residuals", 
+            low = "darkblue", high = "darkblue", mid="lightblue", midpoint=0, limits =  c(-25,25), na.value = "grey50") +
+  labs(title="Residuals in 2012")
+p16 <- ggplot() + geom_polygon(data=filter(finalwithLocation, Year == 2016), aes(x=long, y=lat, group=group, fill = Res), 
+                             color="white", size = 0.2) + 
+  scale_fill_gradient2(name="Residuals", 
+            low = "darkblue", high = "darkblue", mid="lightblue", midpoint=0, limits =  c(-25,25), na.value = "grey50") +
+  labs(title="Residuals in 2016")
+p09
+p12
+p16
+```
+
+```{r}
+finalwithWomenModel <- cbind.data.frame(finalData, Res = model_lab_force$residuals, Fitted =  model_lab_force$fitted.values)
+# Join BaseMap and modelresult
+finalwithWomenModel$Country = as.character(finalwithWomenModel$Country)
+BaseMap$Country = as.character(BaseMap$Country)
+finalwithLocation <- inner_join(BaseMap, finalwithWomenModel, by = "Country")
+p09 <- ggplot() + geom_polygon(data=filter(finalwithLocation, Year == 2009), aes(x=long, y=lat, group=group, fill = Res), color="white", size = 0.2) + 
+  scale_fill_gradient2(name="Residuals", 
+            low = "darkblue", high = "darkblue", mid="lightblue", midpoint=0, limits =  c(-25,25), na.value = "grey50") +
+  labs(title="Residuals for 2009")
+p12 <- ggplot() + geom_polygon(data=filter(finalwithLocation, Year == 2012), aes(x=long, y=lat, group=group, fill = Res), 
+                             color="white", size = 0.2) + 
+ scale_fill_gradient2(name="Residuals", 
+            low = "darkblue", high = "darkblue", mid="lightblue", midpoint=0, limits =  c(-25,25), na.value = "grey50") +
+  labs(title="Residuals in 2012")
+p16 <- ggplot() + geom_polygon(data=filter(finalwithLocation, Year == 2016), aes(x=long, y=lat, group=group, fill = Res), 
+                             color="white", size = 0.2) + 
+  scale_fill_gradient2(name="Residuals", 
+            low = "darkblue", high = "darkblue", mid="lightblue", midpoint=0, limits =  c(-25,25), na.value = "grey50") +
+  labs(title="Residuals in 2016")
+p09
+p12
+p16
+
+hist(finalwithModelResult$Res, xlab="Residual with Final Model")
+
+hist(finalwithWomenModel$Res, xlab="Residual with Labor Force Women variable")
+```
 ## Plot showing multicollinearity between Private Health and Gov Health 
 ```{r}
 ggplot(data = finalData, aes(x = GovHealth, y = PriHealth)) + geom_point()  + labs(title = "Multicollinearity between Private and Government Spending on Healthcare")
