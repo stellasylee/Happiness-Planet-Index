@@ -124,8 +124,30 @@ summary(model_trans_10)
 row.has.na.final <- apply(HPIdata[1:15], 1, function(x){any(is.na(x))})
 finalData <- HPIdata[!row.has.na.final,]
 
+finalData$Region <- as.character(finalData$Region)
+finalData$Region[finalData$Region %in% "1a"] <- "Central America, Mexico & Carribean"
+finalData$Region[finalData$Region %in% "1b"] <- "South America"
+finalData$Region[finalData$Region %in% "2a"] <- "Australia & NZ"
+finalData$Region[finalData$Region %in% "2b"] <- "North America"
+finalData$Region[finalData$Region %in% "2c"] <- "Western Europe"
+finalData$Region[finalData$Region %in% "2d"] <- "Nordic Europe"
+finalData$Region[finalData$Region %in% "2e"] <- "Southern Europe"
+finalData$Region[finalData$Region %in% "3a"] <- "North Africa"
+finalData$Region[finalData$Region %in% "3b"] <- "Middle East / South West Asia"
+finalData$Region[finalData$Region %in% "4a"] <- "Southern & Central Africa"
+finalData$Region[finalData$Region %in% "4b"] <- "East Africa"
+finalData$Region[finalData$Region %in% "4c"] <- "West Africa"
+finalData$Region[finalData$Region %in% "5a"] <- "South Asia"
+finalData$Region[finalData$Region %in% "6a"] <- "China"
+finalData$Region[finalData$Region %in% "6b"] <- "Wealthy East Asia"
+finalData$Region[finalData$Region %in% "6c"] <- "South East Asia"
+finalData$Region[finalData$Region %in% "7a"] <- "Central Asia & Caucuses"
+finalData$Region[finalData$Region %in% "7b"] <- "Central & Eastern Europe"
+finalData$Region[finalData$Region %in% "7c"] <- "Russia, Ukraine & Belarus"
+
 model_transform <- lm (HPI ~ factor(Region) + Internet + LifeExpect + log(GovHealth) + log(PriHealth) + PPP  + log(PopDensity),
                        data = finalData)
+
 anova(model_transform)
 summary(model_transform)
 plot(model_transform)
