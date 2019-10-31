@@ -192,15 +192,15 @@ plot(gov_pri)
  - Need to see whether we should delete Gov Health from these tests
 ```{r}
 # With WomenParliament 
-model_wom_parl <- lm (HPI ~ factor(Region) + Internet + LifeExpect +  log(PriHealth) + PPP +
+model_wom_parl <- lm (HPI ~ factor(Region) + Internet + LifeExpect +  log(PriHealth) + log(GovHealth) + PPP +
                          log(PopDensity)+ WomenParliamant,
                        data = finalData)
-summary(model_wom_parl) #R2 of 0.7834 
+summary(model_wom_parl) #R2 of 0.7832
 # With Labor Force Female 
-model_lab_force <- lm (HPI ~ factor(Region) + Internet + LifeExpect + log(PriHealth) + PPP +
+model_lab_force <- lm (HPI ~ factor(Region) + Internet + LifeExpect + log(PriHealth)+ log(GovHealth) + PPP +
                          log(PopDensity)+ LaborForceFemale*LaborForceFemale,
                        data = finalData)
-summary(model_lab_force) #0.7912
+summary(model_lab_force) #0.7908
 anova(model_transform, model_lab_force)
 anova(model_transform, model_wom_parl)
 anova(model_transform, model_lab_force) # p-val of 0.0002039 ***
